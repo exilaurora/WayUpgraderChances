@@ -226,7 +226,7 @@ details summary{cursor:pointer;color:var(--muted);font-size:12px}
 </section>
 </div>
 
-<div class="intro" id="intro">
+<div class="intro" id="intro" hidden>
 <div class="intro-in">
   <button class="x" id="introX" aria-label="Закрыть">×</button>
   <p class="kicker">Прежде чем смотреть цены</p>
@@ -472,7 +472,6 @@ buildHead();chips();renderPrices();renderSim();renderStats();
   const open=()=>{$('#intro').hidden=false;$('#intro').scrollTop=0;document.body.style.overflow='hidden'};
   $('#introGo').onclick=close;$('#introX').onclick=close;$('#whyBtn').onclick=open;
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#intro').hidden)close()});
-  open();
 })();
 
 </script>
