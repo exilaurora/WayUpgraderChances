@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Апгрейд — цены и симулятор</title>
 <style>
 :root{
@@ -12,6 +12,7 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation}
 html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 body{min-height:100vh}
 button,input,select{font:inherit;color:inherit}
@@ -30,6 +31,8 @@ nav button.on{background:var(--panel2);color:var(--accent)}
 .btn:disabled{background:var(--line);color:var(--dim);cursor:default}
 input[type=text],input[type=number],select{background:var(--panel);border:1px solid var(--line2);border-radius:6px;padding:7px 10px;outline:0}
 input:focus,select:focus{border-color:var(--dim)}
+.qinp{width:260px}
+.sortbox{display:none;gap:6px}
 .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:16px 0}
 .chip{background:none;border:1px solid var(--line);border-radius:999px;padding:4px 11px;color:var(--muted);cursor:pointer;font-size:13px}
 .chip.on{color:var(--accent);border-color:var(--dim);background:var(--panel2)}
@@ -135,6 +138,70 @@ details summary{cursor:pointer;color:var(--muted);font-size:12px}
 .small{color:var(--dim);font-size:12px;max-width:620px;margin:0 0 22px}
 .intro .btn{padding:12px 20px}
 @media(max-width:1000px){.grid{grid-template-columns:1fr}.list{max-height:360px}th{top:0}}
+
+/* mobile */
+@media(max-width:1000px){
+  .grid>div:nth-child(2){order:1}
+}
+@media(max-width:700px){
+  .wrap{padding:0 12px calc(32px + env(safe-area-inset-bottom));padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+  header{flex-wrap:wrap;gap:8px 10px;padding:10px 0;padding-top:max(10px,env(safe-area-inset-top))}
+  header h1{order:1}
+  header .sp{order:2}
+  #whyBtn{order:3}
+  nav{order:4;width:100%}
+  nav button{flex:1;padding:9px 8px}
+  input[type=text],input[type=number],select{font-size:16px;padding:9px 10px}
+  .ghost,.chip{padding:8px 12px}
+  .qinp{width:100%;flex:1 1 100%}
+  .bar{padding:12px 0;gap:8px}
+  #catChips,#kindChips{flex-wrap:wrap}
+  .bar .sp{display:none}
+  .sortbox{display:flex;flex:1 1 100%}
+  .sortbox select{flex:1}
+  /* table -> cards */
+  table,tbody{display:block}
+  thead{display:none}
+  tr{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 10px;padding:12px 0;border-bottom:1px solid var(--line)}
+  tr:hover td{background:none}
+  td{display:block;padding:0;border:0;min-width:0}
+  td:first-child{grid-column:1/-1}
+  td.c{grid-column:1/-1}
+  td[data-l]::before{content:attr(data-l);display:block;color:var(--dim);font-size:11px;text-align:left}
+  td.num{text-align:left}
+  td.c::before{display:inline;margin-right:6px}
+  td.a{grid-column:1/-1;text-align:left;display:flex;gap:8px}
+  td.a button{flex:1;margin:0;padding:9px 10px;font-size:13px}
+  td.e{grid-column:1/-1}
+  .nm{min-width:0}
+  .nm b{overflow-wrap:anywhere}
+  /* sim */
+  .grid{gap:14px;padding-top:12px}
+  .list{max-height:320px}
+  .row{padding:10px 12px}
+  .qty button{width:34px;height:34px;font-size:16px}
+  .qty span{min-width:26px}
+  .center{padding:0}
+  .center .box{padding:14px}
+  .btn{padding:12px 16px}
+  .opts{flex-wrap:wrap;gap:8px}
+  .setrow{flex-wrap:wrap}
+  /* intro */
+  .intro-in{padding:40px 16px calc(40px + env(safe-area-inset-bottom))}
+  .intro h2{font-size:23px}
+  .lead{font-size:15px;margin-bottom:24px}
+  .step{padding:20px 0}
+  .step h3{font-size:17px}
+  .step p{font-size:14px}
+  .dual{gap:12px}
+  .dual .ico{width:56px;height:56px}
+  .dual .big{font-size:36px}
+  .tiles{gap:4px}
+  .tiles i{flex:1;width:auto;height:auto;aspect-ratio:1;max-width:34px}
+  .ex{grid-template-columns:1fr 1fr}
+  .final{padding:16px}
+  .final .big{font-size:18px}
+}
 </style>
 </head>
 <body>
@@ -152,9 +219,10 @@ details summary{cursor:pointer;color:var(--muted);font-size:12px}
 <!-- ЦЕНЫ -->
 <section id="tab-prices">
   <div class="bar">
-    <input id="q" type="text" placeholder="Поиск по названию или id" style="width:260px">
+    <input id="q" type="text" placeholder="Поиск по названию или id" class="qinp">
     <span id="catChips" style="display:flex;gap:6px;flex-wrap:wrap"></span>
     <div class="sp"></div>
+    <span class="sortbox"><select id="sortSel" aria-label="Сортировка"></select><button class="ghost" id="sortDir" aria-label="Направление сортировки"></button></span>
     <span id="kindChips" style="display:flex;gap:6px"></span>
   </div>
   <table>
@@ -296,12 +364,16 @@ let sortKey='T',sortDir=1,cat='all',kind='all';
 const val=(it,k)=>k==='vt'?(it.V&&it.T?it.V/it.T:null):it[k];
 function buildHead(){
   $('#thead').innerHTML=cols.map(([k,l,n])=>`<th data-k="${k}" class="${n?'num':''} ${k===sortKey?'s '+(sortDir<0?'d':''):''}">${l}</th>`).join('');
+  $('#sortSel').innerHTML=cols.filter(c=>c[0]!=='a').map(([k,l])=>`<option value="${k}" ${k===sortKey?'selected':''}>${l}</option>`).join('');
+  $('#sortDir').textContent=sortDir<0?'↓':'↑';
   $('#thead').querySelectorAll('th').forEach(th=>th.onclick=()=>{
     const k=th.dataset.k;if(k==='a')return;
     if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=1}
     buildHead();renderPrices();
   });
 }
+$('#sortSel').onchange=e=>{sortKey=e.target.value;buildHead();renderPrices()};
+$('#sortDir').onclick=()=>{sortDir*=-1;buildHead();renderPrices()};
 const cats=[...new Set(items.map(i=>i.c))];
 function chips(){
   $('#catChips').innerHTML=['all',...cats].map(c=>`<button class="chip ${c===cat?'on':''}" data-c="${c}">${c==='all'?'Все':c}</button>`).join('');
@@ -322,12 +394,12 @@ function renderPrices(){
   });
   $('#tbody').innerHTML=r.map(i=>`<tr>
     <td><div class="nm">${icon(i)}<div><b>${esc(i.n)}</b><small>${i.id}</small></div></div></td>
-    <td class="muted">${i.c}</td>
-    <td class="num">${fmt(i.T)}</td>
-    <td class="num">${fmt(i.V)}</td>
-    <td class="num muted">${i.V&&i.T?(i.V/i.T).toFixed(3):'—'}</td>
-    <td class="act">${i.V?`<button class="ghost" data-s="${i.id}">в ставку</button>`:''}${i.T?`<button class="ghost" data-t="${i.id}">в цель</button>`:''}</td>
-  </tr>`).join('')||`<tr><td colspan="6" class="empty">Ничего не найдено</td></tr>`;
+    <td class="muted c" data-l="Категория">${i.c}</td>
+    <td class="num" data-l="Цель (цена)">${fmt(i.T)}</td>
+    <td class="num" data-l="Ставка">${fmt(i.V)}</td>
+    <td class="num muted" data-l="Ставка / цель">${i.V&&i.T?(i.V/i.T).toFixed(3):'—'}</td>
+    <td class="act a">${i.V?`<button class="ghost" data-s="${i.id}">в ставку</button>`:''}${i.T?`<button class="ghost" data-t="${i.id}">в цель</button>`:''}</td>
+  </tr>`).join('')||`<tr><td colspan="6" class="empty e">Ничего не найдено</td></tr>`;
   $('#tbody').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{changeQty(b.dataset.s,1);setTab('sim')});
   $('#tbody').querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{selectTarget(b.dataset.t);setTab('sim')});
 }
@@ -473,6 +545,10 @@ buildHead();chips();renderPrices();renderSim();renderStats();
   $('#introGo').onclick=close;$('#introX').onclick=close;$('#whyBtn').onclick=open;
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#intro').hidden)close()});
 })();
+
+/* iOS Safari игнорирует user-scalable=no: гасим pinch-зум вручную (double-tap закрыт touch-action) */
+['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
+document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
 
 </script>
 </body>
